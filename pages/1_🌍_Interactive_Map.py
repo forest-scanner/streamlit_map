@@ -7,8 +7,9 @@ st.sidebar.image("https://i.imgur.com/UbOXYAU.png")
 
 st.title("Mapa interactivo con WMS de Madrid")
 
-# Bounding box aproximado de la ciudad de Madrid
-bounds_madrid = [-3.889, 40.312, -3.517, 40.643]  # [minx, miny, maxx, maxy]
+# Centro aproximado de la ciudad de Madrid
+center_madrid = [40.4168, -3.7038]
+zoom_madrid = 11
 
 # Diccionario de servicios WMS
 wms_layers = {
@@ -29,16 +30,15 @@ with col2:
     selected_wms = st.selectbox("Selecciona una capa WMS:", wms_names)
 
 with col1:
+    # Crear el mapa centrado en Madrid sin basemap
     m = leafmap.Map(
+        center=center_madrid,
+        zoom=zoom_madrid,
         locate_control=True,
         latlon_control=True,
         draw_export=True,
         minimap_control=True
-        # No se incluye ningún mapa base
     )
-
-    # Centrar el mapa sobre Madrid
-    m.set_bounds(bounds_madrid)
 
     # Añadir la capa WMS seleccionada
     wms_info = wms_layers[selected_wms]
@@ -51,5 +51,6 @@ with col1:
     )
 
     m.to_streamlit(height=700)
+
 
 
