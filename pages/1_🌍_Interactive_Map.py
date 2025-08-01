@@ -8,7 +8,7 @@ st.sidebar.image("https://i.imgur.com/UbOXYAU.png")
 st.title("Mapa interactivo con WMS de Madrid")
 
 # Bounding box aproximado de la ciudad de Madrid
-bounds_madrid = [-3.889, 40.312, -3.517, 40.643]
+bounds_madrid = [-3.889, 40.312, -3.517, 40.643]  # [minx, miny, maxx, maxy]
 
 # Diccionario de servicios WMS
 wms_layers = {
@@ -34,12 +34,10 @@ with col1:
         latlon_control=True,
         draw_export=True,
         minimap_control=True
+        # No se incluye ningún mapa base
     )
 
-    # Eliminar cualquier capa base por defecto
-    m.clear_layers()
-
-    # Establecer el área de visualización sobre Madrid
+    # Centrar el mapa sobre Madrid
     m.set_bounds(bounds_madrid)
 
     # Añadir la capa WMS seleccionada
