@@ -7,11 +7,9 @@ st.sidebar.image("https://i.imgur.com/UbOXYAU.png")
 
 st.title("Mapa interactivo con WMS de Madrid")
 
-# Centro aproximado de la ciudad de Madrid
 center_madrid = [40.4168, -3.7038]
 zoom_madrid = 11
 
-# Diccionario de servicios WMS
 wms_layers = {
     "Cartografía General de Madrid": {
         "url": "https://sigma.madrid.es/vector/services/MAPAS_BASE/CARTOBASE_LINEAS_WGS84/MapServer/WMSServer",
@@ -30,7 +28,6 @@ with col2:
     selected_wms = st.selectbox("Selecciona una capa WMS:", wms_names)
 
 with col1:
-    # Crear el mapa centrado en Madrid sin basemap
     m = leafmap.Map(
         center=center_madrid,
         zoom=zoom_madrid,
@@ -40,7 +37,9 @@ with col1:
         minimap_control=True
     )
 
-    # Añadir la capa WMS seleccionada
+    # Agregar una capa base muy discreta (casi blanca)
+    m.add_basemap("CartoDB.PositronNoLabels")
+
     wms_info = wms_layers[selected_wms]
     m.add_wms_layer(
         url=wms_info["url"],
@@ -51,6 +50,7 @@ with col1:
     )
 
     m.to_streamlit(height=700)
+
 
 
 
