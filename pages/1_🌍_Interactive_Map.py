@@ -3,7 +3,7 @@ import leafmap.foliumap as leafmap
 
 st.sidebar.title("About")
 st.sidebar.info("Visualizador con WMS de Madrid")
-st.sidebar.image("https://tse3.mm.bing.net/th/id/OIP.TB3PmY2gh65LzXLGYbkcvQHaE4?rs=1&pid=ImgDetMain&o=7&rm=3")
+st.sidebar.image("https://c.pxhere.com/photos/9f/75/aerial_shot_bird's_eye_view_drone_shot_from_above_garden_indonesia-1576071.jpg!s")
 
 st.title("Mapa interactivo con WMS de Madrid")
 
