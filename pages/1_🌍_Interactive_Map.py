@@ -7,14 +7,14 @@ st.sidebar.image("https://i.imgur.com/UbOXYAU.png")
 
 st.title("Mapa interactivo con WMS de Madrid")
 
-# Columnas para controles y mapa
-col1, col2 = st.columns([4, 1])
+# Bounding box aproximado de la ciudad de Madrid
+bounds_madrid = [-3.889, 40.312, -3.517, 40.643]
 
-# Diccionario con tus WMS
+# Diccionario de servicios WMS
 wms_layers = {
     "Cartografía General de Madrid": {
         "url": "https://sigma.madrid.es/vector/services/MAPAS_BASE/CARTOBASE_LINEAS_WGS84/MapServer/WMSServer",
-        "layers": "0"  # En algunos casos se puede usar "0" como identificador simple
+        "layers": "0"
     },
     "Mapa de Vegetación (2022)": {
         "url": "https://georaster.madrid.es/ApolloCatalogWMSpublic/service.svc/get",
@@ -22,14 +22,13 @@ wms_layers = {
     }
 }
 
-# Lista de nombres visibles para el selector
+col1, col2 = st.columns([4, 1])
 wms_names = list(wms_layers.keys())
 
 with col2:
     selected_wms = st.selectbox("Selecciona una capa WMS:", wms_names)
 
 with col1:
-    # Crear el mapa interactivo
     m = leafmap.Map(
         locate_control=True,
         latlon_control=True,
@@ -37,7 +36,13 @@ with col1:
         minimap_control=True
     )
 
-    # Extraer la info del WMS seleccionado
+    # Eliminar cualquier capa base por defecto
+    m.clear_layers()
+
+    # Establecer el área de visualización sobre Madrid
+    m.set_bounds(bounds_madrid)
+
+    # Añadir la capa WMS seleccionada
     wms_info = wms_layers[selected_wms]
     m.add_wms_layer(
         url=wms_info["url"],
@@ -47,6 +52,6 @@ with col1:
         transparent=True
     )
 
-    # Renderizar el mapa en Streamlit
     m.to_streamlit(height=700)
+
 
