@@ -10,7 +10,7 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 # ================= Configuración JWT y usuarios =================
 SECRET = st.secrets.get("COOKIE_SECRET", "default_secret_key_32_chars_long_1234")
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode("utf-8")
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
@@ -25,7 +25,7 @@ if "token" not in st.session_state:
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
     if usuario in users_db:
-        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
+        return bcrypt.checkpw(contraseña.encode("utf-8"), users_db[usuario])
     return False
 
 def crear_token(username):
