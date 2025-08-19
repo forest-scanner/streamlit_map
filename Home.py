@@ -90,7 +90,7 @@ if "token" in st.session_state:
     else:
         st.session_state.logged_in = False
 
-if st.session_state.get("logged_in", False):
+if st.session_state.get("logged_in") and verificar_token(st.session_state.token):
     app()
 else:
     login()
