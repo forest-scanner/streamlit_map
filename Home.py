@@ -8,11 +8,16 @@ import datetime
 st.set_page_config(layout="wide")  # Solo una vez al inicio
 
 # ================= Configuración JWT y usuarios =================
-SECRET = st.secrets.get("COOKIE_SECRET", "default_secret_key_32_chars_long_1234")
+# Cargar credenciales desde secrets.toml
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode("utf-8")
 
+# Aseguramos que el hash está en bytes
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()
+ADMIN_PASSWORD_HASH = ADMIN_PASSWORD_HASH.encode("utf-8")
+
+# Base de datos de usuarios (solo un admin en este caso)
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
+
 
 # ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
@@ -25,7 +30,11 @@ if "token" not in st.session_state:
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
     if usuario in users_db:
-        return bcrypt.checkpw(contraseña.encode("utf-8"), users_db[usuario])
+        try:
+            return bcrypt.checkpw(contraseña.encode("utf-8"), users_db[usuario])
+        except Exception as e:
+            st.error(f"Error en checkpw: {e}")  # 👈 esto mostrará qué está pasando
+            return False
     return False
 
 def crear_token(username):
