@@ -9,8 +9,8 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 
 # ================= Configuración JWT y usuarios =================
 SECRET = st.secrets.get("COOKIE_SECRET", "default_secret_key_32_chars_long_1234")
-ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
+ADMIN_USERNAME = st.secrets["ADMIN_USERNAME"]
+ADMIN_PASSWORD_HASH = st.secrets["ADMIN_PASSWORD_HASH"].encode("utf-8")  
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
@@ -25,8 +25,9 @@ if "token" not in st.session_state:
 
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
-    if usuario in users_db:
-        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
+    # Comprobar usuario y password
+    if usuario == ADMIN_USERNAME:
+        return bcrypt.checkpw(contraseña.encode("utf-8"), ADMIN_PASSWORD_HASH)
     return False
 
 def crear_token(username):
@@ -42,21 +43,16 @@ def verificar_token(token):
 
 # ================= Login =================
 def login():
-    st.title("🔐 Acceso al Sistema de Tickets")
-    with st.form("login_form"):
-        usuario = st.text_input("Usuario")
-        contraseña = st.text_input("Contraseña", type="password")
-        if st.form_submit_button("Iniciar sesión"):
-            if verificar_login(usuario, contraseña):
-                token = crear_token(usuario)
-                st.session_state.token = token
-                st.session_state.logged_in = True
-                st.session_state.usuario = usuario
-                st.success(f"✅ Bienvenido/a, {usuario}")
-                st.balloons()
-                st.experimental_rerun()
-            else:
-                st.error("❌ Usuario o contraseña incorrectos")
+    st.title("🔐 Login")
+
+    usuario = st.text_input("Usuario")
+    contraseña = st.text_input("Contraseña", type="password")
+
+    if st.button("Iniciar sesión"):
+        if verificar_login(usuario, contraseña):
+            st.success("✅ Acceso concedido")
+        else:
+            st.error("❌ Usuario o contraseña incorrectos")
 
 # ================= Home =================
 def home():
