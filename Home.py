@@ -25,9 +25,8 @@ if "token" not in st.session_state:
 
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
-    # Comprobar usuario y password
-    if usuario == ADMIN_USERNAME:
-        return bcrypt.checkpw(contraseña.encode("utf-8"), ADMIN_PASSWORD_HASH)
+    if usuario in users_db:
+        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
     return False
 
 def crear_token(username):
@@ -43,16 +42,21 @@ def verificar_token(token):
 
 # ================= Login =================
 def login():
-    st.title("🔐 Login")
-
-    usuario = st.text_input("Usuario")
-    contraseña = st.text_input("Contraseña", type="password")
-
-    if st.button("Iniciar sesión"):
-        if verificar_login(usuario, contraseña):
-            st.success("✅ Acceso concedido")
-        else:
-            st.error("❌ Usuario o contraseña incorrectos")
+    st.title("🔐 Acceso a la página de inicio")
+    with st.form("login_form"):
+        usuario = st.text_input("Usuario")
+        contraseña = st.text_input("Contraseña", type="password")
+        if st.form_submit_button("Iniciar sesión"):
+            if verificar_login(usuario, contraseña):
+                token = crear_token(usuario)
+                st.session_state.token = token
+                st.session_state.logged_in = True
+                st.session_state.usuario = usuario
+                st.success(f"✅ Bienvenido/a, {usuario}")
+                st.balloons()
+                st.rerun()
+            else:
+                st.error("❌ Usuario o contraseña incorrectos")
 
 # ================= Home =================
 def home():
