@@ -9,8 +9,8 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 
 # ================= Configuración JWT y usuarios =================
 SECRET = st.secrets.get("COOKIE_SECRET", "default_secret_key_32_chars_long_1234")
-ADMIN_USERNAME = st.secrets["ADMIN_USERNAME"]
-ADMIN_PASSWORD_HASH = st.secrets["ADMIN_PASSWORD_HASH"].encode("utf-8")  
+ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
