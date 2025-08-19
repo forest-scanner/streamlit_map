@@ -12,8 +12,8 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
 
 # Aseguramos que el hash está en bytes
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()
-ADMIN_PASSWORD_HASH = ADMIN_PASSWORD_HASH.encode("utf-8")
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode("utf-8")
+
 
 # Base de datos de usuarios (solo un admin en este caso)
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
@@ -29,7 +29,7 @@ if "token" not in st.session_state:
 
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
-    if usuario == st.secrets["ADMIN_USERNAME"]:
+    if usuario == ADMIN_USERNAME:
         return bcrypt.checkpw(contraseña.encode("utf-8"), ADMIN_PASSWORD_HASH)
     return False
 
