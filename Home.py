@@ -52,7 +52,7 @@ def login():
 
 
 # ================= Página principal =================
-def app():
+def home():
     st.title("🎫 Home")
     st.write(f"Bienvenido/a {st.session_state.usuario}")
 
@@ -91,7 +91,7 @@ if "token" in st.session_state:
         st.session_state.logged_in = False
 
 if st.session_state.get("logged_in") and verificar_token(st.session_state.token):
-    app()
+    home()
 else:
     login()
 
