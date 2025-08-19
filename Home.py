@@ -29,12 +29,8 @@ if "token" not in st.session_state:
 
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
-    if usuario in users_db:
-        try:
-            return bcrypt.checkpw(contraseña.encode("utf-8"), users_db[usuario])
-        except Exception as e:
-            st.error(f"Error en checkpw: {e}")  # 👈 esto mostrará qué está pasando
-            return False
+    if usuario == st.secrets["ADMIN_USERNAME"]:
+        return bcrypt.checkpw(contraseña.encode("utf-8"), ADMIN_PASSWORD_HASH)
     return False
 
 def crear_token(username):
