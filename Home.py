@@ -19,8 +19,8 @@ if "usuario" not in st.session_state:
 
 # ================= Funciones =================
 def verificar_login(usuario, contraseña):
-    if usuario in users_db:
-        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
+    if usuario in users_db and users_db[usuario]:
+        return bcrypt.checkpw(contraseña.encode(), users_db[usuario].encode())
     return False
 
 # ================= Login =================
