@@ -9,9 +9,13 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 # ================= Configuración usuarios =================
 
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
+hash_raw = st.secrets.get("ADMIN_PASSWORD_HASH", "")
+ADMIN_PASSWORD_HASH = hash_raw.strip()  # elimina espacios al inicio/final y saltos de línea
 
-users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
+hash_bytes = ADMIN_PASSWORD_HASH.encode()
+
+
+users_db = {ADMIN_USERNAME: hash_bytes}
 
 # ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
@@ -24,23 +28,18 @@ def verificar_login(usuario, contraseña):
         return False
 
     stored_hash = users_db[usuario]
-
-    # Asegurar que siempre son bytes
-    if isinstance(stored_hash, str):
-        stored_hash = stored_hash.strip().encode()
-
     try:
         return bcrypt.checkpw(contraseña.encode(), stored_hash)
     except Exception as e:
-        st.error(f"⚠️ Hash inválido para el usuario '{usuario}': {e}")
+        st.error(f"⚠️ Error al verificar hash: {e}")
         return False
 
 # ================= Login =================
 def login():
     st.title("🔐 Acceso al Sistema de Tickets")
     with st.form("login_form"):
-        usuario = st.text_input("Usuario")
-        contraseña = st.text_input("Contraseña", type="password")
+        usuario = st.text_input("Usuario").strip()
+        contraseña = st.text_input("Contraseña", type="password").strip()
         if st.form_submit_button("Iniciar sesión"):
             if verificar_login(usuario, contraseña):
                 st.session_state.logged_in = True
@@ -81,4 +80,5 @@ if st.session_state.logged_in:
     home()
 else:
     login()
+
 
