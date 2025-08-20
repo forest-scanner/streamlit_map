@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 
 # ================= Configuración usuarios =================
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "")
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
