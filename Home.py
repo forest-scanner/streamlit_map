@@ -6,9 +6,11 @@ import bcrypt
 st.set_page_config(layout="wide")
 
 # ================= Leer secretos =================
-ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME")
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH").strip()  # limpiar espacios
+ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "user").strip()
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()  # si no existe, "" evita crash
 hash_bytes = ADMIN_PASSWORD_HASH.encode()
+
+users_db = {ADMIN_USERNAME: hash_bytes}
 
 users_db = {ADMIN_USERNAME: hash_bytes}
 
