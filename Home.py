@@ -6,32 +6,22 @@ import bcrypt
 st.set_page_config(layout="wide")
 
 # ================= Leer secretos =================
-ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
-hash_raw = st.secrets.get("ADMIN_PASSWORD_HASH", "")
-ADMIN_PASSWORD_HASH = hash_raw.strip()  # eliminar espacios y saltos de línea
+ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME")
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH").strip()  # limpiar espacios
 hash_bytes = ADMIN_PASSWORD_HASH.encode()
 
 users_db = {ADMIN_USERNAME: hash_bytes}
 
-# ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
-# ================= Función de verificación =================
-def verificar_login(usuario: str, contraseña: str) -> bool:
-    usuario = (usuario or "").strip()
-    contraseña = (contraseña or "").strip()
-
-    if usuario not in users_db or not users_db[usuario]:
+# función de verificación
+def verificar_login(usuario, contraseña):
+    if usuario not in users_db:
         return False
-
-    try:
-        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
-    except Exception as e:
-        st.error(f"⚠️ Error al verificar hash: {e}")
-        return False
+    return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
 
 # ================= Login =================
 def login():
@@ -88,5 +78,6 @@ if st.session_state.logged_in:
     home()
 else:
     login()
+
 
 
