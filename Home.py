@@ -2,28 +2,39 @@ import streamlit as st
 import leafmap.foliumap as leafmap
 import bcrypt
 
+
 # ================= Configuración página =================
 st.set_page_config(layout="wide")
 
 # ================= Leer secretos =================
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "user").strip()
-ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()  # si no existe, "" evita crash
-hash_bytes = ADMIN_PASSWORD_HASH.encode()
+ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()
+
+if not ADMIN_PASSWORD_HASH:
+    st.error("⚠️ El secreto ADMIN_PASSWORD_HASH no se ha cargado. Revisa los secrets en Streamlit Cloud.")
+hash_bytes = ADMIN_PASSWORD_HASH.encode() if ADMIN_PASSWORD_HASH else b""
 
 users_db = {ADMIN_USERNAME: hash_bytes}
 
-users_db = {ADMIN_USERNAME: hash_bytes}
-
+# ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
-# función de verificación
-def verificar_login(usuario, contraseña):
-    if usuario not in users_db:
+# ================= Función de verificación =================
+def verificar_login(usuario: str, contraseña: str) -> bool:
+    usuario = (usuario or "").strip()
+    contraseña = (contraseña or "").strip()
+
+    if usuario not in users_db or not users_db[usuario]:
         return False
-    return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
+
+    try:
+        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
+    except Exception as e:
+        st.error(f"⚠️ Error al verificar hash: {e}")
+        return False
 
 # ================= Login =================
 def login():
@@ -36,11 +47,10 @@ def login():
 
     # ===== Debug temporal =====
     with st.expander("🔎 Debug Secrets (temporal)"):
-        st.write("Usuario esperado:", f"`{ADMIN_USERNAME}`")
-        st.write("Hash esperado (longitud):", len(ADMIN_PASSWORD_HASH))
-        st.write("Primeros 10 chars del hash:", ADMIN_PASSWORD_HASH[:10])
+        st.write("Usuario esperado:", repr(ADMIN_USERNAME))
+        st.write("Longitud hash:", len(ADMIN_PASSWORD_HASH))
+        st.write("Primeros 10 chars hash:", ADMIN_PASSWORD_HASH[:10])
 
-    # ===== Verificación login =====
     if submit:
         if verificar_login(usuario_input, contraseña_input):
             st.session_state.logged_in = True
