@@ -19,14 +19,21 @@ if "logged_in" not in st.session_state:
 if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
-
-
-
 def verificar_login(usuario, contraseña):
-    if usuario in users_db:
-        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
-    return False
+    if usuario not in users_db:
+        return False
 
+    stored_hash = users_db[usuario]
+
+    # Asegurar que siempre son bytes
+    if isinstance(stored_hash, str):
+        stored_hash = stored_hash.strip().encode()
+
+    try:
+        return bcrypt.checkpw(contraseña.encode(), stored_hash)
+    except Exception as e:
+        st.error(f"⚠️ Hash inválido para el usuario '{usuario}': {e}")
+        return False
 
 # ================= Login =================
 def login():
