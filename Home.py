@@ -7,14 +7,9 @@ st.set_page_config(layout="wide")  # Solo una vez al inicio
 
 
 # ================= Configuración usuarios =================
+
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").encode()
-
-
-
-# Aseguramos que siempre sea bytes (bcrypt lo exige)
-# if isinstance(ADMIN_PASSWORD_HASH, str):
-   # ADMIN_PASSWORD_HASH = ADMIN_PASSWORD_HASH.encode()
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
@@ -24,15 +19,14 @@ if "logged_in" not in st.session_state:
 if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
-# ================= Función de verificación =================
+
+
+
 def verificar_login(usuario, contraseña):
-    if usuario in users_db and users_db[usuario]:
-        try:
-            return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
-        except ValueError:
-            # Por si el hash está corrupto o vacío
-            return False
+    if usuario in users_db:
+        return bcrypt.checkpw(contraseña.encode(), users_db[usuario])
     return False
+
 
 # ================= Login =================
 def login():
