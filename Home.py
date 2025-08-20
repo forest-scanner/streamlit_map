@@ -16,6 +16,12 @@ if isinstance(ADMIN_PASSWORD_HASH, str):
 
 users_db = {ADMIN_USERNAME: ADMIN_PASSWORD_HASH}
 
+# ================= Inicializar session_state =================
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "usuario" not in st.session_state:
+    st.session_state.usuario = ""
+
 # ================= Función de verificación =================
 def verificar_login(usuario, contraseña):
     if usuario in users_db and users_db[usuario]:
