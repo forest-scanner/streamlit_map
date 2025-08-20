@@ -17,6 +17,10 @@ hash_bytes = ADMIN_PASSWORD_HASH.encode()
 
 users_db = {ADMIN_USERNAME: hash_bytes}
 
+# Mostrar info de debug (NO expone contraseña)
+st.write("Usuario esperado:", f"`{ADMIN_USERNAME}`")
+st.write("Hash esperado (longitud):", len(ADMIN_PASSWORD_HASH))
+st.write("Primeros 10 chars hash:", ADMIN_PASSWORD_HASH[:10])
 # ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
