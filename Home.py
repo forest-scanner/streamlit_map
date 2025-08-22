@@ -66,8 +66,8 @@ def login():
 """
 # ================= Home =================
 """def home():"""
-   if "usuario" not in st.session_state:
-    st.session_state.usuario = "usuario_demo"  # login falso para pruebas
+   """if "usuario" not in st.session_state:
+    st.session_state.usuario = "usuario_demo"  # login falso para pruebas"""
 
 		# ================= Sidebar =================
 		markdown_sidebar = """
