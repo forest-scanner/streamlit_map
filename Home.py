@@ -1,12 +1,13 @@
 import streamlit as st
 import leafmap.foliumap as leafmap
-import bcrypt
+"""import bcrypt"""
 
 
 # ================= Configuración página =================
 st.set_page_config(layout="wide")
 
 # ================= Leer secretos =================
+"""
 ADMIN_USERNAME = st.secrets.get("ADMIN_USERNAME", "user").strip()
 ADMIN_PASSWORD_HASH = st.secrets.get("ADMIN_PASSWORD_HASH", "").strip()
 
@@ -15,7 +16,7 @@ if not ADMIN_PASSWORD_HASH:
 hash_bytes = ADMIN_PASSWORD_HASH.encode() if ADMIN_PASSWORD_HASH else b""
 
 users_db = {ADMIN_USERNAME: hash_bytes}
-
+"""
 # ================= Inicializar session_state =================
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -23,6 +24,7 @@ if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
 # ================= Función de verificación =================
+"""
 def verificar_login(usuario: str, contraseña: str) -> bool:
     usuario = (usuario or "").strip()
     contraseña = (contraseña or "").strip()
@@ -35,8 +37,9 @@ def verificar_login(usuario: str, contraseña: str) -> bool:
     except Exception as e:
         st.error(f"⚠️ Error al verificar hash: {e}")
         return False
-
+"""
 # ================= Login =================
+"""
 def login():
     st.title("🔐 Acceso al Sistema de Tickets")
 
@@ -60,36 +63,58 @@ def login():
             st.experimental_rerun()
         else:
             st.error("❌ Usuario o contraseña incorrectos")
+"""
 # ================= Home =================
-def home():
-    st.title("🏠 Home")
-    st.write(f"Bienvenido/a {st.session_state.usuario}!")
+"""def home():"""
+   if "usuario" not in st.session_state:
+    st.session_state.usuario = "usuario_demo"  # login falso para pruebas
 
-    # Sidebar
-    st.sidebar.title("About")
-    st.sidebar.info("A Streamlit map template\n<https://github.com/opengeos/streamlit-map-template>")
-    st.sidebar.image("https://cdn.pixabay.com/photo/2012/04/01/18/38/park-23939_960_720.png")
+		# ================= Sidebar =================
+		markdown_sidebar = """
+		A Streamlit map template
+		<https://github.com/opengeos/streamlit-map-template>
+		"""
+		st.sidebar.title("About")
+		st.sidebar.info(markdown_sidebar)
+		logo = "https://cdn.pixabay.com/photo/2012/04/01/18/38/park-23939_960_720.png"
+		st.sidebar.image(logo)
 
-    # Mapa
-    m = leafmap.Map(minimap_control=True)
-    m.add_basemap("OpenTopoMap")
-    m.to_streamlit(height=500, width=1400)
+		# ================= Contenido principal =================
+		st.title("🏠 Home")
+		st.write(f"Bienvenido/a {st.session_state.usuario}!")
 
-    # Sistema de Tickets (ejemplo)
-    st.subheader("🎫 Sistema de Tickets")
-    st.write("Aquí puedes gestionar tus tickets...")
+		st.markdown(
+			"""
+			This multipage app template demonstrates various interactive web apps 
+			created using [streamlit](https://streamlit.io) and [leafmap](https://leafmap.org).
+			"""
+		)
 
+		st.header("Instructions")
+		instructions = """
+		1. Visit the [GitHub repository](https://github.com/opengeos/streamlit-map-template)
+		2. Customize the sidebar text and logo in each Python file.
+		3. Find your favorite emoji from https://emojipedia.org.
+		4. Add a new app to the `pages/` directory.
+		"""
+		st.markdown(instructions)
+
+		# ================= Mapa =================
+		m = leafmap.Map(minimap_control=True)
+		m.add_basemap("OpenTopoMap")
+		m.to_streamlit(height=500, width=1400)  # mapa ancho completo
+
+
+
+"""
     # Logout
     if st.button("Cerrar sesión"):
         st.session_state.logged_in = False
         st.session_state.usuario = ""
-        st.experimental_rerun()
+        st.experimental_rerun()"""
 
 # ================= Lógica principal =================
-if st.session_state.logged_in:
+"""if st.session_state.logged_in:
     home()
 else:
-    login()
-
-
-
+    login()"""
